@@ -4,5 +4,4 @@ import { IsString } from 'class-validator';
 export class CreateCategoryDto {
   @IsString({ message: 'Kategoriya sarlavhasi matn bo\'lishi kerak' })
   title: string;
-  img :string
 }

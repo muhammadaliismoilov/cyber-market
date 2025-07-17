@@ -7,9 +7,6 @@ export class Category extends Document {
   @Prop({ required: true, unique: true })
   title: string;
 
-  @Prop({ required: true })
-  img: string;
-
   @Prop({ default: true })
   isActive: boolean;
 }

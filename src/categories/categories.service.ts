@@ -4,11 +4,16 @@ import { Model } from 'mongoose';
 import { Category } from './schema/category.schema';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Product } from 'src/products/schema/product.schema';
 
 // Kategoriya xizmatlari: CRUD operatsiyalarni, shu jumladan rasmni boshqaradi
 @Injectable()
 export class CategoriesService {
-  constructor(@InjectModel(Category.name) private categoryModel: Model<Category>) {}
+  constructor(
+    @InjectModel(Category.name) private categoryModel: Model<Category>,
+    @InjectModel(Product.name) private productModel: Model<Product>,
+  
+  ) {}
 
   // Barcha kategoriyalarni olish
   async findAll(): Promise<Category[]> {
@@ -20,20 +25,26 @@ export class CategoriesService {
   }
 
   // Bitta kategoriyani ID bo'yicha olish
-  async findOne(id: string): Promise<Category> {
+  async findOne(id: string): Promise<any> {
     try {
       const category = await this.categoryModel.findById(id).exec();
       if (!category) {
         throw new BadRequestException('Kategoriya topilmadi');
       }
-      return category;
+      const products = await this.productModel.findOne({category_id:id}).exec()
+      
+       
+      return {
+      category,
+      products
+      } ;
     } catch (error) {
       throw new BadRequestException('Kategoriyani olishda xatolik yuz berdi');
     }
   }
 
   // Yangi kategoriya yaratish, rasm fayli bilan
-  async create(createCategoryDto: CreateCategoryDto, file?: Express.Multer.File): Promise<Category> {
+  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
     try {
       const { title } = createCategoryDto;
       const existingCategory = await this.categoryModel.findOne({ title }).exec();
@@ -41,14 +52,9 @@ export class CategoriesService {
         throw new BadRequestException('Bunday kategoriya mavjud');
       }
 
-      const imgPath = file ? `/uploads/categories/${file.filename}` : '';
-      if (!file) {
-        throw new BadRequestException('Rasm fayli majburiy');
-      }
-
       const categoryData = {
         ...createCategoryDto,
-        img: imgPath,
+       
       };
 
       const category = await this.categoryModel.create(categoryData);
@@ -59,13 +65,9 @@ export class CategoriesService {
   }
 
   // Kategoriyani yangilash, rasm fayli bilan
-  async update(id: string, updateCategoryDto: UpdateCategoryDto, file?: Express.Multer.File): Promise<Category> {
+  async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
     try {
       let updateData = { ...updateCategoryDto };
-
-      if (file) {
-        updateData = { ...updateData, img: `/uploads/categories/${file.filename}` };
-      }
 
       const category = await this.categoryModel.findByIdAndUpdate(id, updateData, { new: true }).exec();
       if (!category) {

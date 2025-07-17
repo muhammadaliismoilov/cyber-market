@@ -10,7 +10,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { ApiTags, ApiResponse, ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
 
 // Autentifikatsiya uchun controller: Ro'yxatdan o'tish, login va boshqa operatsiyalarni boshqaradi
-@ApiTags('auth')
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

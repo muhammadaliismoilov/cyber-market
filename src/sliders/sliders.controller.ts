@@ -1,19 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Controller, Get, Post, Body, Patch, Param, Delete,
+  UploadedFile, UseInterceptors, UseGuards
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { SlidersService } from './sliders.service';
 import { CreateSliderDto } from './dto/create-slider.dto';
 import { UpdateSliderDto } from './dto/update-slider.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiBearerAuth, ApiConsumes, ApiBody, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags, ApiBearerAuth, ApiConsumes, ApiBody,
+  ApiResponse, ApiParam, ApiOperation
+} from '@nestjs/swagger';
+import { RolesGuard } from 'src/guard/roles.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Roles } from 'src/guard/roles.decarator';
+// import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-@ApiTags('sliders')
+@ApiTags('Sliders')
 @Controller('sliders')
 export class SlidersController {
   constructor(private readonly slidersService: SlidersService) {}
 
   @Post()
-  // @UseGuards(JwtAuthGuard)
+   @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles("admin","superadmin")
   @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Yangi slayder qo‘shish',
+    description: 'Yangi slayder yaratadi. Rasm bilan birga ma’lumotlar yuboriladi (multipart/form-data).'
+  })
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -26,29 +40,43 @@ export class SlidersController {
       },
     },
   })
-  @ApiResponse({ status: 201, description: 'Slider successfully created.' })
-  @ApiResponse({ status: 400, description: 'Bad request, check input data.' })
+  @ApiResponse({ status: 201, description: 'Slayder muvaffaqiyatli yaratildi.' })
+  @ApiResponse({ status: 400, description: "Xatolik: noto'g'ri ma'lumot yuborildi." })
   create(@Body() createSliderDto: CreateSliderDto, @UploadedFile() image: Express.Multer.File) {
     return this.slidersService.create(createSliderDto, image);
   }
 
   @Get()
-  @ApiResponse({ status: 200, description: 'Returns all sliders.' })
-  @ApiResponse({ status: 400, description: 'Error fetching sliders.' })
+  @ApiOperation({
+    summary: 'Barcha slayderlarni olish',
+    description: 'Tizimdagi barcha mavjud slayderlarni ro‘yxat tarzida qaytaradi.'
+  })
+  @ApiResponse({ status: 200, description: 'Barcha slayderlar ro‘yxati.' })
+  @ApiResponse({ status: 400, description: 'Slayderlarni olishda xatolik yuz berdi.' })
   findAll() {
     return this.slidersService.findAll();
   }
 
   @Get(':id')
-  @ApiResponse({ status: 200, description: 'Returns a single slider by ID.' })
-  @ApiResponse({ status: 404, description: 'Slider not found.' })
+  @ApiOperation({
+    summary: 'Bitta slayderni olish',
+    description: 'ID bo‘yicha bitta slayderni topib, qaytaradi.'
+  })
+  @ApiResponse({ status: 200, description: "ID bo'yicha slayder ma'lumotlari." })
+  @ApiResponse({ status: 404, description: 'Slayder topilmadi.' })
+  @ApiParam({ name: 'id', description: 'Slayder ID raqami' })
   findOne(@Param('id') id: string) {
     return this.slidersService.findOne(id);
   }
 
   @Patch(':id')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles("admin","superadmin")
   @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Slayderni yangilash',
+    description: 'ID bo‘yicha slayderni yangilaydi. Rasm va boshqa maydonlar o‘zgartiriladi.'
+  })
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -61,17 +89,23 @@ export class SlidersController {
       },
     },
   })
-  @ApiResponse({ status: 200, description: 'Slider successfully updated.' })
-  @ApiResponse({ status: 400, description: 'Bad request or slider not found.' })
+  @ApiResponse({ status: 200, description: 'Slayder muvaffaqiyatli yangilandi.' })
+  @ApiResponse({ status: 400, description: 'Xatolik yoki slayder topilmadi.' })
   update(@Param('id') id: string, @Body() updateSliderDto: UpdateSliderDto, @UploadedFile() image: Express.Multer.File) {
     return this.slidersService.update(id, updateSliderDto, image);
   }
 
   @Delete(':id')
-  // @UseGuards(JwtAuthGuard)
+   @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles("admin","superadmin")
   @ApiBearerAuth('JWT-auth')
-  @ApiResponse({ status: 200, description: 'Slider successfully deleted.' })
-  @ApiResponse({ status: 404, description: 'Slider not found.' })
+  @ApiOperation({
+    summary: 'Slayderni o‘chirish',
+    description: 'ID bo‘yicha slayderni tizimdan o‘chiradi.'
+  })
+  @ApiResponse({ status: 200, description: 'Slayder o‘chirildi.' })
+  @ApiResponse({ status: 404, description: 'Slayder topilmadi.' })
+  @ApiParam({ name: 'id', description: 'Slayder ID raqami' })
   remove(@Param('id') id: string) {
     return this.slidersService.remove(id);
   }

@@ -6,10 +6,14 @@ import { extname } from 'path';
 import { CategoriesService } from './categories.service';
 import { CategoriesController } from './categories.controller';
 import { Category, CategorySchema } from './schema/category.schema';
+import { Product, ProductSchema } from 'src/products/schema/product.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Category.name, schema: CategorySchema }]),
+    MongooseModule.forFeature([
+      { name: Category.name, schema: CategorySchema },
+      { name: Product.name, schema: ProductSchema }
+    ]),
     MulterModule.register({
       storage: diskStorage({
         destination: './uploads/categories',

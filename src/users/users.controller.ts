@@ -3,6 +3,8 @@ import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiTags, ApiBearerAuth, ApiResponse, ApiBody, ApiOperation } from '@nestjs/swagger';
+import { RolesGuard } from 'src/guard/roles.guard';
+import { Roles } from 'src/guard/roles.decarator';
 
 // Foydalanuvchilar uchun controller: CRUD operatsiyalarini boshqaradi
 @ApiTags('users')
@@ -11,7 +13,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+   @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles("admin","superadmin")
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Barcha foydalanuvchilarni olish', description: 'Barcha foydalanuvchilar ro‘yxatini qaytaradi.' })
   @ApiResponse({ status: 200, description: 'Barcha foydalanuvchilar muvaffaqiyatli qaytarildi.' })
@@ -26,7 +29,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Bitta foydalanuvchini ID bo‘yicha olish', description: 'Berilgan ID bo‘yicha foydalanuvchini qaytaradi.' })
   @ApiResponse({ status: 200, description: 'Foydalanuvchi muvaffaqiyatli topildi.' })
@@ -43,7 +46,7 @@ export class UsersController {
 
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Foydalanuvchini yangilash', description: 'Berilgan ID bo‘yicha foydalanuvchi ma’lumotlarini yangilaydi.' })
   @ApiBody({

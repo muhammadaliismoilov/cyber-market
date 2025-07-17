@@ -6,9 +6,9 @@ export class CreateSliderDto {
   title: string;
 
   @IsString({ message: 'Tavsif matn bo\'lishi kerak' })
-  @IsOptional()
   description: string;
 
   @IsUrl({}, { message: 'Rasm uchun to\'g\'ri URL kiritilishi kerak' })
+  @IsOptional()
   image: string;
 }

@@ -13,10 +13,10 @@ export class Product extends Document {
   @Prop({ required: true })
   price: number;
 
-  @Prop({ required: true, enum: ['qizil', 'qora', 'oq', 'yashil', 'ko\'k'] })
+  @Prop({ required: true })
   color: string;
 
-  @Prop({ required: true, enum: ['128', '256', '512', '1T'] })
+  @Prop({ required: true })
   memory: string;
 
   @Prop()
@@ -58,7 +58,7 @@ export class Product extends Document {
   @Prop()
   additionally: string;
 
-  @Prop({ type: [String], default: [], validate: v => v.length <= 4 }) // Maksimum 4 rasm
+  @Prop({ type: [String], default: [], validate: v => v.length <= 6 }) // Maksimum 4 rasm
   imgs: string[];
 }
 

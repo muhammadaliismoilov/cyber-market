@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ConfigModule } from '@nestjs/config';
@@ -14,19 +14,27 @@ async function bootstrap() {
   });
   const PORT = process.env.PORT||3000
   // Global validatsiya quvuri: DTO validatsiyasi uchun, xatolarni o'zbek tilida chiqaradi
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true,
-    exceptionFactory: (errors) => {
-      const messages = errors.map(error => ({
-        property: error.property,
-        message: Object.values(error.constraints ?? {}).join(', '),
-      }));
-      return new Error(`Validatsiya xatosi: ${JSON.stringify(messages)}`);
-    },
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      exceptionFactory: (errors) => {
+        const messages = errors.map(error => ({
+          property: error.property,
+          message: Object.values(error.constraints ?? {}).join(', '),
+        }));
+        return new BadRequestException({
+          statusCode: 400,
+          message: 'Validatsiya xatosi',
+          errors: messages,
+        });
+      },
+    }),
+  );
   
   // Global xato filtri
-  app.useGlobalFilters(new HttpExceptionFilter());
+  // app.useGlobalFilters(new HttpExceptionFilter());
 
   // Swagger hujjatlari sozlamalari
   const config = new DocumentBuilder()
