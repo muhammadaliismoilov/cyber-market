@@ -12,7 +12,7 @@ import { CreateBuyDto } from './dto/create-buy.dto';
 import { UpdateBuyDto } from './dto/update-buy.dto';
 import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
-@ApiTags('Sotib olingan mahsulotlar')
+@ApiTags('Buy')
 @Controller('buy')
 export class BuyController {
   constructor(private readonly buyService: BuyService) {}

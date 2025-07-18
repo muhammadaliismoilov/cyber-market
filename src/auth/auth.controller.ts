@@ -22,9 +22,9 @@ export class AuthController {
       type: 'object',
       properties: {
         name: { type: 'string', example: 'Ali' },
-        email: { type: 'string', example: 'ali@example.com' },
+        email: { type: 'string', example: 'asdfg@gmail.com' },
         phone_number: { type: 'string', example: '+998901234567', nullable: true },
-        password: { type: 'string', example: 'password123' },
+        password: { type: 'string', example: 'passwore123' },
       },
       required: ['name', 'email', 'password'],
     },
@@ -68,8 +68,8 @@ export class AuthController {
     schema: {
       type: 'object',
       properties: {
-        email: { type: 'string', example: 'ali@example.com' },
-        password: { type: 'string', example: 'password123' },
+        email: { type: 'string', example: 'aliismoilov2001@gmail.com' },
+        password: { type: 'string', example: 'ali3433' },
       },
       required: ['email', 'password'],
     },

@@ -19,7 +19,6 @@ export class LikesController {
   constructor(private readonly likesService: LikesService) {}
 
   @Get()
-  
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Barcha like larni olish',
@@ -32,7 +31,6 @@ export class LikesController {
   }
 
   @Get(':id')
-  
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Like ni ID bo‘yicha olish',
@@ -46,7 +44,6 @@ export class LikesController {
   }
 
   @Post()
-  
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Yangi like yaratish',
@@ -99,7 +96,7 @@ export class LikesController {
   }
 
   @Delete(':id')
-  
+
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Like ni o‘chirish',

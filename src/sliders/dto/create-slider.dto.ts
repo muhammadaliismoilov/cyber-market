@@ -10,5 +10,5 @@ export class CreateSliderDto {
 
   @IsUrl({}, { message: 'Rasm uchun to\'g\'ri URL kiritilishi kerak' })
   @IsOptional()
-  image: string;
+  image?: string;
 }

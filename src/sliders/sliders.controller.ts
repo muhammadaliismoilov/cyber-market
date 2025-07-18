@@ -21,9 +21,9 @@ export class SlidersController {
   constructor(private readonly slidersService: SlidersService) {}
 
   @Post()
-   @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles("admin","superadmin")
   @ApiBearerAuth('JWT-auth')
+  // @UseGuards(JwtAuthGuard,RolesGuard)
+  // @Roles("superadmin")
   @ApiOperation({
     summary: 'Yangi slayder qo‘shish',
     description: 'Yangi slayder yaratadi. Rasm bilan birga ma’lumotlar yuboriladi (multipart/form-data).'
@@ -70,8 +70,8 @@ export class SlidersController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles("admin","superadmin")
+  // @UseGuards(JwtAuthGuard,RolesGuard)
+  // @Roles("admin","superadmin")
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Slayderni yangilash',
@@ -96,8 +96,8 @@ export class SlidersController {
   }
 
   @Delete(':id')
-   @UseGuards(JwtAuthGuard,RolesGuard)
-    @Roles("admin","superadmin")
+  //  @UseGuards(JwtAuthGuard,RolesGuard)
+  //   @Roles("admin","superadmin")
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Slayderni o‘chirish',

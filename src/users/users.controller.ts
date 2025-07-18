@@ -13,8 +13,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-   @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles("admin","superadmin")
+  //  @UseGuards(JwtAuthGuard,RolesGuard)
+  // @Roles("admin","superadmin")
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Barcha foydalanuvchilarni olish', description: 'Barcha foydalanuvchilar ro‘yxatini qaytaradi.' })
   @ApiResponse({ status: 200, description: 'Barcha foydalanuvchilar muvaffaqiyatli qaytarildi.' })
@@ -29,7 +29,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Bitta foydalanuvchini ID bo‘yicha olish', description: 'Berilgan ID bo‘yicha foydalanuvchini qaytaradi.' })
   @ApiResponse({ status: 200, description: 'Foydalanuvchi muvaffaqiyatli topildi.' })
@@ -46,7 +46,7 @@ export class UsersController {
 
 
   @Put(':id')
-   @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Foydalanuvchini yangilash', description: 'Berilgan ID bo‘yicha foydalanuvchi ma’lumotlarini yangilaydi.' })
   @ApiBody({

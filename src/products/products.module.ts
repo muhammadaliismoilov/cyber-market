@@ -46,12 +46,14 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import * as fs from 'fs';
 import { Category, CategorySchema } from 'src/categories/schema/category.schema';
+import { Like, LikeSchema } from 'src/likes/schema/like.schema';
 
 @Module({
   imports: [
     // MongoDB modelni ro‘yxatdan o‘tkazamiz
     MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema },
-      { name: Category.name, schema: CategorySchema }, 
+      { name: Category.name, schema: CategorySchema },
+      { name: Like.name, schema: LikeSchema } 
     ]),
 
     // Fayllarni vaqtincha saqlash uchun multer sozlamasi

@@ -30,6 +30,8 @@ export class RolesGuard implements CanActivate {
     if (!user || !user.role) {
       throw new ForbiddenException('Sizda ruxsat yo‘q');
     }
+    console.log('User:', user);
+console.log('Kerakli rolar:', requiredRoles);
 
     // Foydalanuvchining roli kerakli ro'lardan biri bo‘lishi kerak
     if (!requiredRoles.includes(user.role)) {
