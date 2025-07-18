@@ -23,6 +23,11 @@ export class CreateProductDto {
   @Type(() => Number)
   price: number;
 
+  @ApiProperty({ description: "Mahsulot soni", example: 5 })
+  @IsNumber({}, { message: "Mahsulot soni raqam bo‘lishi kerak" })
+  @Type(() => Number)
+  count: number;
+
   @ApiProperty({ description: "Rangi", example: "Qora" })
   @IsString({ message: "Rang matn bo‘lishi kerak" })
   color: string;

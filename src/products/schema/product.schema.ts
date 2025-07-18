@@ -14,6 +14,9 @@ export class Product extends Document {
   price: number;
 
   @Prop({ required: true })
+  count: number;
+
+  @Prop({ required: true })
   color: string;
 
   @Prop({ required: true })
