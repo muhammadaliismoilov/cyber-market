@@ -1,27 +1,39 @@
-- name: Deploy and Run App on VPS
-  uses: appleboy/ssh-action@v1.0.0
-  with:
-    host: ${{ secrets.VPS_HOST }}
-    username: root
-    key: ${{ secrets.VPS_SSH_KEY }}
-    port: 22
-    script: |
-      set -e
-      cd /root
-      rm -rf cyber-market
-      git clone https://github.com/muhammadaliismoilov/cyber-market.git
-      cd cyber-market
+name: Deploy and Run App on VPS
 
-      echo "PORT=4003" > .env
-      echo 'MONGODB_URI=${{ secrets.MONGODB_URI }}' >> .env
-      echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-      echo 'EMAIL_USER=${{ secrets.EMAIL_USER }}' >> .env
-      echo "EMAIL_PASS=${{ secrets.EMAIL_PASS }}" >> .env
-      echo "UPLOADCARE_PUBLIC_KEY=${{ secrets.UPLOADCARE_PUBLIC_KEY }}" >> .env
+on:
+  push:
+    branches:
+      - main
 
-      npm install
-      npm run build
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-      pm2 delete cyber-market || true
-      pm2 start dist/main.js --name cyber-market
-      pm2 save
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy and Run App on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          script: |
+            set -e
+            cd /root
+            rm -rf cyber-market
+            git clone https://github.com/muhammadaliismoilov/cyber-market.git
+            cd cyber-market
+            echo "PORT=4003" > .env
+            echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+            echo "EMAIL_USER=${{ secrets.EMAIL_USER }}" >> .env
+            echo "EMAIL_PASS=${{ secrets.EMAIL_PASS }}" >> .env
+            echo "UPLOADCARE_PUBLIC_KEY=${{ secrets.UPLOADCARE_PUBLIC_KEY }}" >> .env
+            npm install
+            npm run build
+            pm2 delete cyber-market || true
+            pm2 start dist/main.js --name cyber-market
+            pm2 save
