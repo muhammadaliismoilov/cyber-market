@@ -154,7 +154,7 @@ export class ProductsController {
   @ApiResponse({ status: 200, description: "Barcha mahsulotlar ro‘yxati." })
   @ApiResponse({
     status: 400,
-    description: "Mahsulotlarni olishda xatolik yuz berdi.",
+    description: "Mahsulotlarni olishda  xatolik yuz berdi.",
   })
   findAll() {
     return this.productsService.findAll();
