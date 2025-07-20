@@ -1,0 +1,66 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Copy project to VPS via SSH
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          source: "."
+          target: "/root/cyber-market"
+
+      - name: Create .env file on server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          script: |
+            cd /root/cyber-market
+            echo "PORT=4003" > .env
+            echo 'MONGODB_URI="mongodb+srv://rustammuborakmuhammadali:apO3ZcFCDWTSwsbH@cluster0.ty2y2fj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"' >> .env
+            echo "JWT_SECRET=zdrammalaykim" >> .env
+            echo 'EMAIL_USER="rustammuborakmuhammadali@gmail.com"' >> .env
+            echo "EMAIL_PASS=ikuv bmcm hptl buro" >> .env
+            echo "UPLOADCARE_PUBLIC_KEY=cebabe13fb9a3805982a" >> .env
+
+      - name: Install & Restart PM2 app on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          script: |
+            cd /root/cyber-market
+            npm install
+            npm run build
+            pm2 delete cyber-market || true
+            pm2 start dist/main.js --name cyber-market
+            pm2 save
