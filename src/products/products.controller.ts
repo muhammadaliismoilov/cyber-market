@@ -149,7 +149,7 @@ export class ProductsController {
   @Get()
   @ApiOperation({
     summary: "Barcha mahsulotlar",
-    description: "Barcha mahsulotlar ro`yxatini beradi",
+    description: "Barcha  mahsulotlar ro`yxatini beradi",
   })
   @ApiResponse({ status: 200, description: "Barcha mahsulotlar ro‘yxati." })
   @ApiResponse({
