@@ -17,7 +17,6 @@ export class RolesGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-
     // Agar hech qanday rol kerak bo'lmasa, ruxsat beramiz
     if (!requiredRoles || requiredRoles.length === 0) {
       return true;
@@ -26,12 +25,12 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
+    // console.log('User:', user);
     // Agar foydalanuvchi yo'q bo‘lsa yoki roli yo‘q bo‘lsa
     if (!user || !user.role) {
       throw new ForbiddenException('Sizda ruxsat yo‘q');
     }
-    console.log('User:', user);
-console.log('Kerakli rolar:', requiredRoles);
+// console.log('Kerakli rolar:', requiredRoles);
 
     // Foydalanuvchining roli kerakli ro'lardan biri bo‘lishi kerak
     if (!requiredRoles.includes(user.role)) {

@@ -4,11 +4,11 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateLikeDto {
   @ApiProperty({ example: '64d3ad1a5d43f6b91b1fd3a1', description: 'Foydalanuvchi IDsi' })
-  @IsString({ message: 'Foydalanuvchi ID noto‘g‘ri' })
+  @IsMongoId({ message: 'Foydalanuvchi ID noto‘g‘ri' })
   user_id: string;
 
   @ApiProperty({ example: '64d3ad1a5d43f6b91b1fd3a2', description: 'Mahsulot IDsi' })
-  @IsString({ message: 'Mahsulot ID noto‘g‘ri' })
+  @IsMongoId({ message: 'Mahsulot ID noto‘g‘ri' })
   product_id: string;
 
   @ApiProperty({ example: true, description: 'Like qilinganmi yoki yo‘qmi' })

@@ -11,7 +11,7 @@ import { Type } from 'class-transformer';
 
 export class CreateProductDto {
   @ApiProperty({ description: "Kategoriya ID", example: "64d3ad1a5d43f6b91b1fd3a1" })
-  @IsString({ message: "Kategoriya ID noto‘g‘ri" })
+  @IsMongoId({ message: "Kategoriya ID noto‘g‘ri" })
   category_id: string;
 
   @ApiProperty({ description: "Mahsulot nomi", example: "iPhone 15 Pro" })

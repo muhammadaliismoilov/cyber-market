@@ -47,14 +47,20 @@ import { extname } from 'path';
 import * as fs from 'fs';
 import { Category, CategorySchema } from 'src/categories/schema/category.schema';
 import { Like, LikeSchema } from 'src/likes/schema/like.schema';
+import { Comment, CommentSchema } from 'src/comment/schema/comment.schema';
+import { Buy, BuySchema } from 'src/buy/schema/buy.schema';
+import { BuyModule } from 'src/buy/buy.module';
 
 @Module({
   imports: [
     // MongoDB modelni ro‘yxatdan o‘tkazamiz
     MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema },
       { name: Category.name, schema: CategorySchema },
-      { name: Like.name, schema: LikeSchema } 
+      { name: Like.name, schema: LikeSchema } ,
+      { name: Comment.name, schema: CommentSchema } ,
+      { name: Buy.name, schema: BuySchema } 
     ]),
+    
 
     // Fayllarni vaqtincha saqlash uchun multer sozlamasi
     MulterModule.register({

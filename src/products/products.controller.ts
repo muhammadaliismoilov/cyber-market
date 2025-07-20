@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   Put,
   UseGuards,
+  Query,
 } from "@nestjs/common";
 import { ProductsService } from "./products.service";
 import { CreateProductDto } from "./dto/create-product.dto";
@@ -23,10 +24,13 @@ import {
   ApiResponse,
   ApiParam,
   ApiOperation,
+  ApiQuery,
 } from "@nestjs/swagger";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { RolesGuard } from "src/guard/roles.guard";
 import { Roles } from "src/guard/roles.decarator";
+import { Product } from "./schema/product.schema";
+import { BuyService } from "src/buy/buy.service";
 
 @ApiTags("Products")
 @Controller("products")
@@ -87,6 +91,59 @@ export class ProductsController {
     @UploadedFiles() files: { imgs?: Express.Multer.File[] }
   ) {
     return this.productsService.create(createProductDto, files.imgs || []);
+  }
+
+  @Get("/new-arrival")
+  @ApiOperation({
+    summary: "Yangi mahsulotlar ro`yxati (New Arrival)",
+    description:
+      "Eng yangi qo‘shilgan mahsulotlarni sahifalab (5 tadan) chiqaradi.",
+  })
+  @ApiQuery({
+    name: "page",
+    required: false,
+    type: Number,
+    example: 1,
+    description: "Sahifa raqami (ixtiyoriy, default = 1)",
+  })
+  @ApiResponse({
+    status: 200,
+    description: "Eng yangi mahsulotlar muvaffaqiyatli qaytarildi.",
+    schema: {
+      example: {
+        page: 1,
+        total: 12,
+        hasNext: true,
+        hasPrev: false,
+        products: [
+          {
+            _id: "123456789",
+            name: "Mahsulot 1",
+            price: 25000,
+            createdAt: "2025-07-18T18:15:00.000Z",
+          },
+          // ...
+        ],
+      },
+    },
+  })
+  async getNewArrival(@Query("page") page?: number) {
+    return this.productsService.NewArrivle(page || 1);
+  }
+
+  @Get("bestsellers")
+  @ApiOperation({
+    summary: "Eng ko‘p sotilgan mahsulotlar ro‘yxati (BestSeller)",
+  })
+  @ApiQuery({
+    name: "page",
+    required: false,
+    type: Number,
+    example: 1,
+    description: "Sahifa raqami (ixtiyoriy, default = 1)",
+  })
+  async getBestsellers(@Query("page") page: number = 1) {
+    return this.productsService.BestSellears(page);
   }
 
   @Get()

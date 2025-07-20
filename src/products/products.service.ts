@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, NotFoundException, InternalServerErrorException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model,Types } from "mongoose";
 import { Product } from "./schema/product.schema";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
@@ -8,6 +8,8 @@ import { UploadClient } from "@uploadcare/upload-client";
 import * as fs from "fs";
 import { Category } from "src/categories/schema/category.schema";
 import { Like } from "src/likes/schema/like.schema";
+import { Comment } from "src/comment/schema/comment.schema";
+import { Buy } from "src/buy/schema/buy.schema";
 
 @Injectable()
 export class ProductsService {
@@ -22,7 +24,8 @@ export class ProductsService {
     @InjectModel(Product.name) private productModel: Model<Product>,
     @InjectModel(Category.name) private categoryModel: Model<Category>,
     @InjectModel(Like.name) private likeModel: Model<Like>,
-    // @InjectModel(Category.name) private categoryModel: Model<Category>
+    @InjectModel(Comment.name) private commentModel: Model<Comment>,
+    @InjectModel(Buy.name) private buyModel: Model<Buy>
   ) {}
 
   async create(createProductDto: CreateProductDto, files: Express.Multer.File[]): Promise<Product> {
@@ -63,6 +66,103 @@ export class ProductsService {
     }
   }
 
+  // product.service.ts
+
+async NewArrivle(page: number = 1) {
+  const limit = 5;
+  const skip = (page - 1) * limit;
+
+  const total = await this.productModel.countDocuments();
+
+  const products = await this.productModel
+    .find()
+    .sort({ createdAt: -1 }) // YANGI qo‘shilgan mahsulotlar birinchi chiqadi
+    .skip(skip)
+    .limit(limit)
+    .exec();
+
+  const hasNext = total > page * limit;
+  const hasPrev = page > 1;
+
+  return {
+    page,
+    total,
+    hasNext,
+    hasPrev,
+    products,
+  };
+}
+  async BestSellears(page: number = 1) {
+  const limit = 5;
+  const skip = (page - 1) * limit;
+
+  try {
+    // Aggregation orqali eng ko‘p sotilgan mahsulotlar ro‘yxati
+    const result = await this.buyModel.aggregate([
+  {
+    $group: {
+      _id: '$product_id',
+      totalSold: { $sum: '$count' },
+    },
+  },
+  {
+    $addFields: {
+      productObjectId: {
+        $cond: [
+          { $eq: [{ $type: '$_id' }, 'string'] },
+          { $toObjectId: '$_id' },
+          '$_id',
+        ],
+      },
+    },
+  },
+  {
+    $sort: { totalSold: -1 },
+  },
+  { $skip: skip },
+  { $limit: limit },
+  {
+    $lookup: {
+      from: 'products',
+      localField: 'productObjectId',
+      foreignField: '_id',
+      as: 'product',
+    },
+  },
+  { $unwind: '$product' },
+  {
+    $project: {
+      _id: '$product._id',
+      name: '$product.name',
+      price: '$product.price',
+      imgs: '$product.imgs',
+      totalSold: 1,
+      createdAt: '$product.createdAt',
+    },
+  },
+]);
+
+    // Umumiy mahsulotlar soni (distinct product_id boyicha)
+    const totalProducts = await this.buyModel.distinct('product_id');
+    const total = totalProducts.length;
+    const hasNext = page * limit < total;
+    const hasPrev = page > 1;
+
+    return {
+      page,
+      total,
+      hasNext,
+      hasPrev,
+      products: result,
+    };
+  } catch (error) {
+    throw new InternalServerErrorException('Eng ko`p sotilgan mahsulotlarni olishda xatolik yuz berdi');
+  }
+}
+
+
+
+
   async findAll(): Promise<Product[]> {
     try {
       return await this.productModel.find().exec();
@@ -71,13 +171,18 @@ export class ProductsService {
     }
   }
 
-  async findOne(id: string): Promise<Product> {
+  async findOne(id: string): Promise<{ product: Product; comments: Comment[]}> {
     try {
       const product = await this.productModel.findById(id).exec();
       if (!product) {
         throw new NotFoundException("Mahsulot topilmadi");
       }
-      return product;
+      const comments = await this.commentModel.find().exec();
+
+    return {
+      product,
+      comments,
+    };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;

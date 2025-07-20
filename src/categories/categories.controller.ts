@@ -32,8 +32,8 @@ export class CategoriesController {
   // Yangi kategoriya yaratish
   @Post()
   @ApiBearerAuth("JWT-auth")
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles("admin", "superadmin")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin", "superadmin")
   @ApiOperation({
     summary: "Yangi kategoriya yaratish",
     description: "Berilgan sarlavha bilan yangi kategoriya yaratadi.",
@@ -99,8 +99,8 @@ export class CategoriesController {
 
   // Kategoriyani yangilash
   @Put(":id")
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles("admin", "superadmin")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin", "superadmin")
   @ApiBearerAuth("JWT-auth")
   @ApiOperation({
     summary: "Kategoriyani yangilash",
@@ -134,8 +134,8 @@ export class CategoriesController {
 
   // Kategoriyani o‘chirish
   @Delete(":id")
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles("admin", "superadmin")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin", "superadmin")
   @ApiBearerAuth("JWT-auth")
   @ApiOperation({
     summary: "Kategoriyani o‘chirish",

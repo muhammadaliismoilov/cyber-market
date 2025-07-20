@@ -158,7 +158,7 @@
 // }
 
 
-import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../users/schema/user.schema';
@@ -227,7 +227,7 @@ export class AuthService {
 
       return { message: 'Foydalanuvchi ro\'yxatdan o\'tdi, OTP emailga yuborildi' };
     } catch (error) {
-      throw new BadRequestException('Ro\'yxatdan o\'tishda xatolik yuz berdi: ' + error.message);
+      throw new InternalServerErrorException('Ro\'yxatdan o\'tishda xatolik yuz berdi: ' + error.message);
     }
   }
 
@@ -246,7 +246,7 @@ export class AuthService {
 
       return { message: 'Email muvaffaqiyatli tasdiqlandi' };
     } catch (error) {
-      throw new BadRequestException('OTP tasdiqlashda xatolik yuz berdi: ' + error.message);
+      throw new InternalServerErrorException('OTP tasdiqlashda xatolik yuz berdi: ' + error.message);
     }
   }
 

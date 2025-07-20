@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { BuyModule } from './buy/buy.module';
 import { CommentModule } from './comment/comment.module';
+
 // Asosiy modul: Barcha modullarni birlashtiradi va MongoDB bilan ulanadi
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CommentModule } from './comment/comment.module';
     LikesModule,
     BuyModule,
     CommentModule,
+   
   ],
 })
 export class AppModule {}

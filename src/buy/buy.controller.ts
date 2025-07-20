@@ -6,11 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { BuyService } from './buy.service';
 import { CreateBuyDto } from './dto/create-buy.dto';
 import { UpdateBuyDto } from './dto/update-buy.dto';
-import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiParam, ApiResponse, ApiQuery } from '@nestjs/swagger';
 
 @ApiTags('Buy')
 @Controller('buy')
