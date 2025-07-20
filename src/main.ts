@@ -28,7 +28,7 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle("Cyber Market API")
+    .setTitle("Cyber_Market API")
     .setDescription("Cyber Market backend API hujjatlari")
     .setVersion("1.0")
     .addBearerAuth(
