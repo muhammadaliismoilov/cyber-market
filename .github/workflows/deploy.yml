@@ -50,6 +50,44 @@ jobs:
             echo "EMAIL_PASS=ikuv bmcm hptl buro" >> .env
             echo "UPLOADCARE_PUBLIC_KEY=cebabe13fb9a3805982a" >> .env
 
+      - name: Git clone and deploy project directly on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          script: |
+            set -e
+            export APP_DIR="/root/xn_3_ci_cd_deploy"
+            export PORT=4003
+
+            if [ ! -d "$APP_DIR" ]; then
+              mkdir -p "$APP_DIR"
+              git clone https://github.com/muhammadaliismoilov/cyber-market "$APP_DIR"
+            fi
+
+            cd "$APP_DIR"
+
+            if [ ! -d .git ]; then
+              echo "❌ Repo not cloned properly. Aborting."
+              exit 1
+            fi
+
+            git pull origin main
+
+            echo "PORT=$PORT" > .env
+            npm install
+            npm run build
+
+            if pm2 list | grep -q "ci_cd_app"; then
+              pm2 restart ci_cd_app
+            else
+              pm2 start dist/main.js --name ci_cd_app
+            fi
+
+            pm2 save
+
       - name: Install and Start App with PM2
         uses: appleboy/ssh-action@v1.0.0
         with:
