@@ -29,7 +29,7 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST }}
           username: root
-          password: ${{ secrets.VPS_PASSWORD }}
+          key: ${{ secrets.EC2_SSH_KEY }}   # ⬅️ PEM faylni matni
           port: 22
           source: "."
           target: "/root/cyber-market"
@@ -39,7 +39,7 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST }}
           username: root
-          password: ${{ secrets.VPS_PASSWORD }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
             cd /root/cyber-market
@@ -55,7 +55,7 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST }}
           username: root
-          password: ${{ secrets.VPS_PASSWORD }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
             cd /root/cyber-market
