@@ -138,7 +138,7 @@ export class CategoriesController {
   @Roles("admin", "superadmin")
   @ApiBearerAuth("JWT-auth")
   @ApiOperation({
-    summary: "Kategoriyani o‘chirish",
+    summary: "Kategoriyani    o‘chirish",
     description: "Berilgan ID bo‘yicha kategoriyani o‘chiradi.",
   })
   @ApiResponse({
