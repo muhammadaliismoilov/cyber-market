@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 // Mahsulot sxemasi: Mahsulotning barcha xususiyatlarini, shu jumladan 4 tagacha rasmni saqlaydi
 @Schema({ timestamps: true })
 export class Product extends Document {
-  @Prop({ required: true, ref: 'Category' })
+  @Prop({type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Category' })
   category_id: string;
 
   @Prop({ required: true })

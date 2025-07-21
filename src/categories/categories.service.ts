@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Category } from './schema/category.schema';
@@ -65,7 +65,7 @@ export class CategoriesService {
   }
 
 async searchByTitle(title: string): Promise<object> {
-    // Kategoriya nomi bo‘yicha qidirish
+  try {
     const category = await this.categoryModel.findOne({
       title: { $regex: title, $options: 'i' },
     });
@@ -74,7 +74,6 @@ async searchByTitle(title: string): Promise<object> {
       throw new NotFoundException('Bunday nomdagi kategoriya topilmadi');
     }
 
-    // Kategoriya ID bo‘yicha mahsulotlarni olish
     const products = await this.productModel.find({ category_id: category._id });
 
     if (!products.length) {
@@ -86,7 +85,21 @@ async searchByTitle(title: string): Promise<object> {
       product_count: products.length,
       products,
     };
+
+  } catch (error) {
+    if (error instanceof NotFoundException) {
+      throw error; // 404
+    }
+
+    if (error instanceof BadRequestException) {
+      throw error; // 400
+    }
+
+    console.error('Search xatoligi:', error);
+    throw new InternalServerErrorException('Serverda kutilmagan xatolik yuz berdi');
   }
+}
+
 
   // Kategoriyani yangilash, rasm fayli bilan
   async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<Category> {

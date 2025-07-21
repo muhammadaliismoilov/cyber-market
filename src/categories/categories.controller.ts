@@ -100,29 +100,27 @@ export class CategoriesController {
   }
 
 @Get('search')
-  @ApiOperation({ summary: 'Kategoriya nomi orqali mahsulotlarni topish' })
-  @ApiQuery({ name: 'title', required: true, description: 'Kategoriya nomi (qisman moslik)' })
-
-  @ApiResponse({
-    status: 200,
-    description: 'Kategoriya va unga tegishli mahsulotlar muvaffaqiyatli topildi',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Kategoriya yoki mahsulotlar topilmadi',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'So‘rov noto‘g‘ri kiritilgan',
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Serverda kutilmagan xatolik yuz berdi',
-  })
-
-  async search(@Query('title') title: string) {
-    return this.categoriesService.searchByTitle(title);
-  }
+@ApiOperation({ summary: 'Kategoriya nomi orqali mahsulotlarni topish' })
+@ApiQuery({ name: 'title', required: true, description: 'Kategoriya nomi (qisman moslik)' })
+@ApiResponse({
+  status: 200,
+  description: 'Kategoriya va unga tegishli mahsulotlar muvaffaqiyatli topildi',
+})
+@ApiResponse({
+  status: 404,
+  description: 'Kategoriya yoki mahsulotlar topilmadi',
+})
+@ApiResponse({
+  status: 400,
+  description: 'So‘rov noto‘g‘ri kiritilgan',
+})
+@ApiResponse({
+  status: 500,
+  description: 'Serverda kutilmagan xatolik yuz berdi',
+})
+async search(@Query('title') title: string) {
+  return this.categoriesService.searchByTitle(title);
+}
 
   // Kategoriyani yangilash
   @Put(":id")
