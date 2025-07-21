@@ -12,14 +12,15 @@ import { Roles } from 'src/guard/roles.decarator';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get()
-  //  @UseGuards(JwtAuthGuard,RolesGuard)
-  // @Roles("admin","superadmin")
+  @Get("get_all_users")
+   @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles("admin","superadmin")
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Barcha foydalanuvchilarni olish', description: 'Barcha foydalanuvchilar ro‘yxatini qaytaradi.' })
   @ApiResponse({ status: 200, description: 'Barcha foydalanuvchilar muvaffaqiyatli qaytarildi.' })
   @ApiResponse({ status: 400, description: 'Foydalanuvchilarni olishda xatolik yuz berdi.' })
   @ApiResponse({ status: 401, description: 'Autentifikatsiya talab qilinadi.' })
+  @ApiResponse({ status: 500, description: 'Serverda kutilmagan xatolik yuz berdi' })
   getAll() {
     try {
       return this.usersService.getAll();
@@ -28,13 +29,14 @@ export class UsersController {
     }
   }
 
-  @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @Get('get_one_user/:id')
+   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Bitta foydalanuvchini ID bo‘yicha olish', description: 'Berilgan ID bo‘yicha foydalanuvchini qaytaradi.' })
   @ApiResponse({ status: 200, description: 'Foydalanuvchi muvaffaqiyatli topildi.' })
   @ApiResponse({ status: 400, description: 'Foydalanuvchi topilmadi yoki xatolik yuz berdi.' })
   @ApiResponse({ status: 401, description: 'Autentifikatsiya talab qilinadi.' })
+  @ApiResponse({ status: 500, description: 'Serverda kutilmagan xatolik yuz berdi' })
   getOne(@Param('id') id: string) {
     try {
       return this.usersService.getOne(id);
@@ -45,7 +47,7 @@ export class UsersController {
 
 
 
-  @Put(':id')
+  @Put('update_user/:id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Foydalanuvchini yangilash', description: 'Berilgan ID bo‘yicha foydalanuvchi ma’lumotlarini yangilaydi.' })
@@ -64,6 +66,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Foydalanuvchi muvaffaqiyatli yangilandi.' })
   @ApiResponse({ status: 400, description: 'Foydalanuvchi topilmadi yoki yangilashda xatolik yuz berdi.' })
   @ApiResponse({ status: 401, description: 'Autentifikatsiya talab qilinadi.' })
+  @ApiResponse({ status: 500, description: 'Serverda kutilmagan xatolik yuz berdi' })
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     try {
       return this.usersService.update(id, updateUserDto);
@@ -72,13 +75,14 @@ export class UsersController {
     }
   }
 
-  @Delete(':id')
+  @Delete('delete_user/:id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Foydalanuvchini o‘chirish', description: 'Berilgan ID bo‘yicha foydalanuvchini o‘chiradi.' })
   @ApiResponse({ status: 200, description: 'Foydalanuvchi muvaffaqiyatli o‘chirildi.' })
   @ApiResponse({ status: 400, description: 'Foydalanuvchi topilmadi yoki o‘chirishda xatolik yuz berdi.' })
   @ApiResponse({ status: 401, description: 'Autentifikatsiya talab qilinadi.' })
+  @ApiResponse({ status: 500, description: 'Serverda kutilmagan xatolik yuz berdi' })
   delete(@Param('id') id: string) {
     try {
       return this.usersService.delete(id);

@@ -158,7 +158,7 @@
 // }
 
 
-import { Injectable, BadRequestException, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException, InternalServerErrorException, ConflictException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../users/schema/user.schema';
@@ -199,7 +199,7 @@ export class AuthService {
       const { email, password, role } = registerDto;
       const existingUser = await this.userModel.findOne({ email }).exec();
       if (existingUser) {
-        throw new BadRequestException('Bu email allaqachon ro\'yxatdan o\'tgan');
+        throw new ConflictException('Bu email allaqachon ro\'yxatdan o\'tgan');
       }
 
       // Parolni bcrypt bilan hash qilish
@@ -256,13 +256,13 @@ export class AuthService {
       const { email, password } = loginDto;
       const user = await this.userModel.findOne({ email }).exec();
       if (!user) {
-        throw new UnauthorizedException('Email noto\'g\'ri');
+        throw new BadRequestException('Email noto\'g\'ri');
       }
       if (!user.isVerified) {
-        throw new UnauthorizedException('Foydalanuvchi tasdiqlanmagan');
+        throw new BadRequestException('Foydalanuvchi tasdiqlanmagan');
       }
       if (!(await bcrypt.compare(password, user.password))) {
-        throw new UnauthorizedException('Parol noto\'g\'ri');
+        throw new BadRequestException('Parol noto\'g\'ri');
       }
 
       const payload = { sub: user._id, email: user.email, name: user.name, role: user.role };
@@ -274,7 +274,7 @@ export class AuthService {
         }),
       };
     } catch (error) {
-      throw new UnauthorizedException('Login qilishda xatolik yuz berdi: ' + error.message);
+      throw new InternalServerErrorException('Login qilishda xatolik yuz berdi: ' + error.message);
     }
   }
 
@@ -322,7 +322,7 @@ export class AuthService {
 
       return { message: 'Parol muvaffaqiyatli o\'zgartirildi' };
     } catch (error) {
-      throw new BadRequestException('Parolni o\'zgartirishda xatolik yuz berdi: ' + error.message);
+      throw new InternalServerErrorException('Parolni o\'zgartirishda xatolik yuz berdi: ' + error.message);
     }
   }
 

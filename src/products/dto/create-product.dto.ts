@@ -11,7 +11,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
 export class CreateProductDto {
-  @IsNotEmpty({message:"hayegoriya id bo`sh bolmasligi kerak"})
+  @IsNotEmpty({message:"kayegoriya id bo`sh bolmasligi kerak"})
   @ApiProperty({ description: "Kategoriya ID", example: "64d3ad1a5d43f6b91b1fd3a1" })
   @IsMongoId({ message: "Kategoriya ID noto‘g‘ri" })
   category_id: string;

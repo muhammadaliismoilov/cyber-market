@@ -32,7 +32,7 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   // Yangi kategoriya yaratish
-  @Post()
+  @Post("create_categorie")
   @ApiBearerAuth("JWT-auth")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin", "superadmin")
@@ -59,13 +59,13 @@ export class CategoriesController {
     status: 400,
     description:
       "Noto‘g‘ri so‘rov, kategoriya allaqachon mavjud yoki ma’lumotlar xato.",
-  })
+  })@ApiResponse({ status: 500, description: 'Serverda kutilmagan xatolik yuz berdi' })
   async create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
   }
 
   // Barcha kategoriyalarni olish
-  @Get()
+  @Get("get_all_categories")
   @ApiOperation({
     summary: "Barcha kategoriyalarni olish",
     description: "Barcha kategoriyalar ro‘yxatini qaytaradi.",
@@ -79,12 +79,13 @@ export class CategoriesController {
     status: 400,
     description: "Kategoriyalarni olishda xatolik yuz berdi.",
   })
+  @ApiResponse({ status: 500, description: 'Serverda kutilmagan xatolik yuz berdi' })
   async findAll() {
     return this.categoriesService.findAll();
   }
 
   // ID bo‘yicha bitta kategoriyani olish
-  @Get(":id")
+  @Get("find_one_categorie/:id")
   @ApiOperation({
     summary: "Kategoriyani ID bo‘yicha olish",
     description: "Berilgan ID bo‘yicha bitta kategoriyani qaytaradi.",
@@ -99,7 +100,7 @@ export class CategoriesController {
     return this.categoriesService.findOne(id);
   }
 
-@Get('search')
+@Get('search/categorie')
 @ApiOperation({ summary: 'Kategoriya nomi orqali mahsulotlarni topish' })
 @ApiQuery({ name: 'title', required: true, description: 'Kategoriya nomi (qisman moslik)' })
 @ApiResponse({
@@ -123,7 +124,7 @@ async search(@Query('title') title: string) {
 }
 
   // Kategoriyani yangilash
-  @Put(":id")
+  @Put("update_categorie/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin", "superadmin")
   @ApiBearerAuth("JWT-auth")
@@ -158,7 +159,7 @@ async search(@Query('title') title: string) {
   }
 
   // Kategoriyani o‘chirish
-  @Delete(":id")
+  @Delete("delete_categorie/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin", "superadmin")
   @ApiBearerAuth("JWT-auth")

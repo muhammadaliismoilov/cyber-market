@@ -1,4 +1,4 @@
-import { IsString, IsEmail, IsEnum, IsOptional } from 'class-validator';
+import { IsString, IsEmail, IsEnum, IsOptional, IsNotEmpty } from 'class-validator';
 
 // Foydalanuvchi yangilash uchun DTO: Foydalanuvchi ma'lumotlarini validatsiya qiladi
 export class UpdateUserDto {
@@ -7,12 +7,12 @@ export class UpdateUserDto {
   name?: string;
 
   @IsEmail({}, { message: 'Email noto\'g\'ri formatda' })
-  @IsOptional()
-  email?: string;
+  @IsNotEmpty()
+  email: string;
 
   @IsString({ message: 'Parol matn bo\'lishi kerak' })
-  @IsOptional()
-  password?: string;
+  @IsNotEmpty()
+  password: string;
 
   @IsString({ message: 'Telefon raqami matn bo\'lishi kerak' })
   @IsOptional()

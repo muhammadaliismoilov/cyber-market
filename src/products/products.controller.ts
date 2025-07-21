@@ -30,14 +30,13 @@ import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { RolesGuard } from "src/guard/roles.guard";
 import { Roles } from "src/guard/roles.decarator";
 import { Product } from "./schema/product.schema";
-import { BuyService } from "src/buy/buy.service";
 
 @ApiTags("Products")
 @Controller("products")
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Post()
+  @Post("create_product")
   @ApiBearerAuth("JWT-auth")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin", "superadmin")
@@ -86,6 +85,7 @@ export class ProductsController {
     status: 400,
     description: "Kategoriya ID noto‘g‘ri yoki fayl limiti oshib ketdi.",
   })
+  @ApiResponse({ status: 500, description: 'Mahsulot yaratishda serverda kutilmagan xatolik yuz berdi' })
   create(
     @Body() createProductDto: CreateProductDto,
     @UploadedFiles() files: { imgs?: Express.Multer.File[] }
@@ -93,7 +93,7 @@ export class ProductsController {
     return this.productsService.create(createProductDto, files.imgs || []);
   }
 
-  @Get("search")
+  @Get("search_product")
   @ApiOperation({ summary: "Mahsulotlarni filter orqali qidirish" })
   @ApiResponse({
     status: 200,description: "Mahsulotlar ro‘yxati muvaffaqiyatli qaytarildi.",
@@ -199,7 +199,7 @@ export class ProductsController {
     return this.productsService.BestSellears(page);
   }
 
-  @Get()
+  @Get("get_all_products")
   @ApiOperation({
     summary: "Barcha mahsulotlar",
     description: "Barcha  mahsulotlar ro`yxatini beradi",
@@ -209,23 +209,25 @@ export class ProductsController {
     status: 400,
     description: "Mahsulotlarni olishda  xatolik yuz berdi.",
   })
+  @ApiResponse({ status: 500, description: 'Barcha mahsulotlarni olishda serverda kutilmagan xatolik yuz berdi' })
   findAll() {
     return this.productsService.findAll();
   }
 
-  @Get(":id")
+  @Get("get_one_product/:id")
   @ApiOperation({
     summary: "Bitta mahsulotni olish",
     description: "Id bo`yicha bitta mahsulotni beradi",
   })
   @ApiResponse({ status: 200, description: "ID bo‘yicha mahsulot topildi." })
   @ApiResponse({ status: 404, description: "Mahsulot topilmadi." })
+  @ApiResponse({ status: 500, description: 'Bitta mahsulotni olishda serverda kutilmagan xatolik yuz berdi' })
   @ApiParam({ name: "id", description: "Mahsulot ID raqami" })
   findOne(@Param("id") id: string) {
     return this.productsService.findOne(id);
   }
 
-  @Put(":id")
+  @Put("update_product/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin", "superadmin")
   @ApiBearerAuth("JWT-auth")
@@ -274,6 +276,7 @@ export class ProductsController {
     status: 400,
     description: "Yangilashda xatolik yoki mahsulot topilmadi.",
   })
+  @ApiResponse({ status: 500, description: 'Serverda kutilmagan xatolik yuz berdi' })
   update(
     @Param("id") id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -282,7 +285,7 @@ export class ProductsController {
     return this.productsService.update(id, updateProductDto, files.imgs || []);
   }
 
-  @Delete(":id")
+  @Delete("delete_product/:id")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin", "superadmin")
   @ApiBearerAuth("JWT-auth")
@@ -296,6 +299,7 @@ export class ProductsController {
     description: "Mahsulot muvaffaqiyatli o‘chirildi.",
   })
   @ApiResponse({ status: 404, description: "Mahsulot topilmadi." })
+  @ApiResponse({ status: 500, description: 'Serverda kutilmagan xatolik yuz berdi' })
   remove(@Param("id") id: string) {
     return this.productsService.remove(id);
   }

@@ -1,5 +1,5 @@
 // likes.controller.ts
-import { Controller, Get, Post, Body, Patch, Delete, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Delete, Param, UseGuards, Put } from '@nestjs/common';
 import { LikesService } from './likes.service';
 import { CreateLikeDto } from './dto/create-like.dto';
 import { UpdateLikeDto } from './dto/update-like.dto';
@@ -14,11 +14,11 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('Likes')
-@Controller('likes')
+@Controller('like')
 export class LikesController {
   constructor(private readonly likesService: LikesService) {}
 
-  @Get()
+  @Get("get_all_likes")
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Barcha like larni olish',
@@ -30,7 +30,7 @@ export class LikesController {
     return this.likesService.getAll();
   }
 
-  @Get(':id')
+  @Get('geet_one_like/:id')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Like ni ID bo‘yicha olish',
@@ -43,7 +43,7 @@ export class LikesController {
     return this.likesService.getOne(id);
   }
 
-  @Post()
+  @Post("create_like")
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Yangi like yaratish',
@@ -70,7 +70,7 @@ export class LikesController {
     return this.likesService.create(createLikeDto);
   }
 
-  @Patch(':id')
+  @Put('update_like/:id')
   
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
@@ -95,7 +95,7 @@ export class LikesController {
     return this.likesService.update(id, updateLikeDto);
   }
 
-  @Delete(':id')
+  @Delete('deelete_like:id')
 
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({

@@ -59,9 +59,6 @@ export class ProductsService {
 
       return await this.productModel.create(productData);
     } catch (error) {
-      if (error instanceof BadRequestException || error instanceof NotFoundException) {
-        throw error;
-      }
       throw new InternalServerErrorException("Mahsulot yaratishda server xatoligi yuz berdi");
     }
   }

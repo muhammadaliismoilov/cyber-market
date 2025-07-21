@@ -1,6 +1,7 @@
 import {
   Controller, Get, Post, Body, Patch, Param, Delete,
-  UploadedFile, UseInterceptors, UseGuards
+  UploadedFile, UseInterceptors, UseGuards,
+  Put
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SlidersService } from './sliders.service';
@@ -20,7 +21,7 @@ import { Roles } from 'src/guard/roles.decarator';
 export class SlidersController {
   constructor(private readonly slidersService: SlidersService) {}
 
-  @Post()
+  @Post("create_slider")
   @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard,RolesGuard)
   @Roles("admin","superadmin")
@@ -42,22 +43,24 @@ export class SlidersController {
   })
   @ApiResponse({ status: 201, description: 'Slayder muvaffaqiyatli yaratildi.' })
   @ApiResponse({ status: 400, description: "Xatolik: noto'g'ri ma'lumot yuborildi." })
+  @ApiResponse({ status: 500, description: 'Serverda kutilmagan xatolik yuz berdi' })
   create(@Body() createSliderDto: CreateSliderDto, @UploadedFile() image: Express.Multer.File) {
     return this.slidersService.create(createSliderDto, image);
   }
 
-  @Get()
+  @Get("get_all_sliders")
   @ApiOperation({
     summary: 'Barcha slayderlarni olish',
     description: 'Tizimdagi barcha mavjud slayderlarni ro‘yxat tarzida qaytaradi.'
   })
   @ApiResponse({ status: 200, description: 'Barcha slayderlar ro‘yxati.' })
-  @ApiResponse({ status: 400, description: 'Slayderlarni olishda xatolik yuz berdi.' })
+  @ApiResponse({ status: 404, description: 'Slayderlarni olishda xatolik yuz berdi.' })
+  @ApiResponse({ status: 500, description: 'Serverda kutilmagan xatolik yuz berdi' })
   findAll() {
     return this.slidersService.findAll();
   }
 
-  @Get(':id')
+  @Get('get_one_slider/:id')
   @ApiOperation({
     summary: 'Bitta slayderni olish',
     description: 'ID bo‘yicha bitta slayderni topib, qaytaradi.'
@@ -65,11 +68,12 @@ export class SlidersController {
   @ApiResponse({ status: 200, description: "ID bo'yicha slayder ma'lumotlari." })
   @ApiResponse({ status: 404, description: 'Slayder topilmadi.' })
   @ApiParam({ name: 'id', description: 'Slayder ID raqami' })
+  @ApiResponse({ status: 500, description: 'Serverda kutilmagan xatolik yuz berdi' })
   findOne(@Param('id') id: string) {
     return this.slidersService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put('update_slider:id')
   @UseGuards(JwtAuthGuard,RolesGuard)
   @Roles("admin","superadmin")
   @ApiBearerAuth('JWT-auth')
@@ -90,12 +94,13 @@ export class SlidersController {
     },
   })
   @ApiResponse({ status: 200, description: 'Slayder muvaffaqiyatli yangilandi.' })
-  @ApiResponse({ status: 400, description: 'Xatolik yoki slayder topilmadi.' })
+  @ApiResponse({ status: 404, description: 'Xatolik yoki slayder topilmadi.' })
+  @ApiResponse({ status: 500, description: 'Serverda kutilmagan xatolik yuz berdi' })
   update(@Param('id') id: string, @Body() updateSliderDto: UpdateSliderDto, @UploadedFile() image: Express.Multer.File) {
     return this.slidersService.update(id, updateSliderDto, image);
   }
 
-  @Delete(':id')
+  @Delete('delete_slider/:id')
    @UseGuards(JwtAuthGuard,RolesGuard)
     @Roles("admin","superadmin")
   @ApiBearerAuth('JWT-auth')
@@ -105,6 +110,7 @@ export class SlidersController {
   })
   @ApiResponse({ status: 200, description: 'Slayder o‘chirildi.' })
   @ApiResponse({ status: 404, description: 'Slayder topilmadi.' })
+  @ApiResponse({ status: 500, description: 'Serverda kutilmagan xatolik yuz berdi' })
   @ApiParam({ name: 'id', description: 'Slayder ID raqami' })
   remove(@Param('id') id: string) {
     return this.slidersService.remove(id);

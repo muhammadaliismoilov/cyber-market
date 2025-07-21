@@ -32,14 +32,14 @@ export class CategoriesService {
         throw new BadRequestException('Kategoriya topilmadi');
       }
       const products = await this.productModel.findOne({category_id:id}).exec()
-      
+      if(!products)throw new NotFoundException("Mahsulotlar topilmadi")
        
       return {
       category,
       products
       } ;
     } catch (error) {
-      throw new BadRequestException('Kategoriyani olishda xatolik yuz berdi');
+      throw new InternalServerErrorException('Kategoriyani olishda xatolik yuz berdi');
     }
   }
 
