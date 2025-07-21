@@ -93,14 +93,49 @@ export class ProductsController {
     return this.productsService.create(createProductDto, files.imgs || []);
   }
 
-   @Get('search')
-  @ApiOperation({ summary: 'Search products with filters' })
-  @ApiQuery({ name: 'title', required: false, description: 'Product title (partial match)' })
-  @ApiQuery({ name: 'minPrice', required: false, type: Number })
-  @ApiQuery({ name: 'maxPrice', required: false, type: Number })
-  @ApiQuery({ name: 'count', required: false, type: Number })
-  @ApiQuery({ name: 'color', required: false, description: 'Comma-separated colors' })
-  @ApiQuery({ name: 'memory', required: false, description: 'Comma-separated memory values' })
+  @Get("search")
+  @ApiOperation({ summary: "Mahsulotlarni filter orqali qidirish" })
+  @ApiResponse({
+    status: 200,description: "Mahsulotlar ro‘yxati muvaffaqiyatli qaytarildi.",
+  })
+  @ApiResponse({
+    status: 400, description: "So‘rov parametrlari noto‘g‘ri kiritilgan. (Masalan: string o‘rniga number)",
+  })
+  @ApiResponse({
+    status: 404,description: "Bunday mahsulot topilmadi.",
+  })
+  @ApiResponse({
+    status: 500, description: "Ichki server xatosi.",
+  })
+  @ApiQuery({ name: "title", required: false, description: "Mahsulot nomi" })
+  @ApiQuery({
+    name: "minPrice",
+    required: false,
+    type: Number,
+    description: "Minimal narx",
+  })
+  @ApiQuery({
+    name: "maxPrice",
+    required: false,
+    type: Number,
+    description: "Maksimal narx",
+  })
+  @ApiQuery({
+    name: "count",
+    required: false,
+    type: Number,
+    description: "Mahsulot soni",
+  })
+  @ApiQuery({
+    name: "color",
+    required: false,
+    description: "Rang (vergul bilan ajratilgan)",
+  })
+  @ApiQuery({
+    name: "memory",
+    required: false,
+    description: "Xotira (vergul bilan ajratilgan)",
+  })
   async search(@Query() query: any) {
     return this.productsService.search(query);
   }
@@ -138,6 +173,12 @@ export class ProductsController {
         ],
       },
     },
+  })
+  @ApiResponse({
+    status: 404,description: "Bunday mahsulot topilmadi.",
+  })
+  @ApiResponse({
+    status: 500, description: "Ichki server xatosi.",
   })
   async getNewArrival(@Query("page") page?: number) {
     return this.productsService.NewArrivle(page || 1);

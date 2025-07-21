@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Category } from './schema/category.schema';
@@ -62,6 +62,30 @@ export class CategoriesService {
     } catch (error) {
       throw new BadRequestException('Kategoriya yaratishda xatolik yuz berdi');
     }
+  }
+
+async searchByTitle(title: string): Promise<object> {
+    // Kategoriya nomi bo‘yicha qidirish
+    const category = await this.categoryModel.findOne({
+      title: { $regex: title, $options: 'i' },
+    });
+
+    if (!category) {
+      throw new NotFoundException('Bunday nomdagi kategoriya topilmadi');
+    }
+
+    // Kategoriya ID bo‘yicha mahsulotlarni olish
+    const products = await this.productModel.find({ category_id: category._id });
+
+    if (!products.length) {
+      throw new NotFoundException('Ushbu kategoriya uchun mahsulotlar topilmadi');
+    }
+
+    return {
+      category,
+      product_count: products.length,
+      products,
+    };
   }
 
   // Kategoriyani yangilash, rasm fayli bilan

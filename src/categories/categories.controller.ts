@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Put,
+  Query,
 } from "@nestjs/common";
 import { CategoriesService } from "./categories.service";
 import { CreateCategoryDto } from "./dto/create-category.dto";
@@ -19,6 +20,7 @@ import {
   ApiBody,
   ApiResponse,
   ApiOperation,
+  ApiQuery,
 } from "@nestjs/swagger";
 import { RolesGuard } from "src/guard/roles.guard";
 import { Roles } from "src/guard/roles.decarator";
@@ -95,6 +97,31 @@ export class CategoriesController {
   @ApiResponse({ status: 404, description: "Kategoriya topilmadi." })
   async findOne(@Param("id") id: string) {
     return this.categoriesService.findOne(id);
+  }
+
+@Get('search')
+  @ApiOperation({ summary: 'Kategoriya nomi orqali mahsulotlarni topish' })
+  @ApiQuery({ name: 'title', required: true, description: 'Kategoriya nomi (qisman moslik)' })
+
+  @ApiResponse({
+    status: 200,
+    description: 'Kategoriya va unga tegishli mahsulotlar muvaffaqiyatli topildi',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Kategoriya yoki mahsulotlar topilmadi',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'So‘rov noto‘g‘ri kiritilgan',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Serverda kutilmagan xatolik yuz berdi',
+  })
+
+  async search(@Query('title') title: string) {
+    return this.categoriesService.searchByTitle(title);
   }
 
   // Kategoriyani yangilash

@@ -99,6 +99,10 @@ async search(query: any): Promise<object> {
       this.productModel.countDocuments(filters).exec(),
     ]);
 
+    if (!products.length) {
+      throw new NotFoundException('Bunday mahsulot topilmadi');
+    }
+
     return { count, products };
   }
 
