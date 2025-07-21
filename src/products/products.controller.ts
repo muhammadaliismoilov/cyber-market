@@ -93,6 +93,18 @@ export class ProductsController {
     return this.productsService.create(createProductDto, files.imgs || []);
   }
 
+   @Get('search')
+  @ApiOperation({ summary: 'Search products with filters' })
+  @ApiQuery({ name: 'title', required: false, description: 'Product title (partial match)' })
+  @ApiQuery({ name: 'minPrice', required: false, type: Number })
+  @ApiQuery({ name: 'maxPrice', required: false, type: Number })
+  @ApiQuery({ name: 'count', required: false, type: Number })
+  @ApiQuery({ name: 'color', required: false, description: 'Comma-separated colors' })
+  @ApiQuery({ name: 'memory', required: false, description: 'Comma-separated memory values' })
+  async search(@Query() query: any) {
+    return this.productsService.search(query);
+  }
+
   @Get("/new-arrival")
   @ApiOperation({
     summary: "Yangi mahsulotlar ro`yxati (New Arrival)",

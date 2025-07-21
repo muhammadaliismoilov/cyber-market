@@ -66,7 +66,42 @@ export class ProductsService {
     }
   }
 
-  // product.service.ts
+async search(query: any): Promise<object> {
+    const plainQuery = { ...query };
+    const filters: any = {};
+
+    if (plainQuery.title) {
+      filters.title = { $regex: plainQuery.title, $options: 'i' };
+    }
+
+    if (plainQuery.minPrice || plainQuery.maxPrice) {
+      filters.price = {};
+      if (plainQuery.minPrice) filters.price.$gte = Number(plainQuery.minPrice);
+      if (plainQuery.maxPrice) filters.price.$lte = Number(plainQuery.maxPrice);
+    }
+
+    if (plainQuery.count) {
+      filters.count = Number(plainQuery.count);
+    }
+
+    if (plainQuery.color) {
+      const colors = plainQuery.color.split(',');
+      filters.color = { $in: colors.map((c: string) => new RegExp(c, 'i')) };
+    }
+
+    if (plainQuery.memory) {
+      const memories = plainQuery.memory.split(',');
+      filters.memory = { $in: memories.map((m: string) => new RegExp(m, 'i')) };
+    }
+
+    const [products, count] = await Promise.all([
+      this.productModel.find(filters).exec(),
+      this.productModel.countDocuments(filters).exec(),
+    ]);
+
+    return { count, products };
+  }
+
 
 async NewArrivle(page: number = 1) {
   const limit = 5;

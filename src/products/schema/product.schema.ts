@@ -22,43 +22,43 @@ export class Product extends Document {
   @Prop({ required: true })
   memory: string;
 
-  @Prop()
+  @Prop({ required: false })
   screen_size: string;
 
-  @Prop()
+  @Prop({ required: false })
   cpu: string;
 
-  @Prop()
+  @Prop({ required: false })
   number_of_cores: number;
 
-  @Prop()
+  @Prop({ required: false })
   main_camera: string;
 
-  @Prop()
+  @Prop({ required: false })
   front_camera: string;
 
-  @Prop()
+  @Prop({ required: false })
   battery_capacity: string;
 
-  @Prop()
+  @Prop({ required: false })
   description: string;
 
-  @Prop()
+  @Prop({ required: false })
   details: string;
 
-  @Prop()
+  @Prop({ required: false })
   screen_resolution: string;
 
-  @Prop()
+  @Prop({ required: false })
   screen_refresh_rate: string;
 
-  @Prop()
+  @Prop({ required: false })
   pixel_density: string;
 
-  @Prop()
+  @Prop({ required: false })
   screen_type: string;
 
-  @Prop()
+  @Prop({ required: false })
   additionally: string;
 
   @Prop({ type: [String], default: [], validate: v => v.length <= 6 }) // Maksimum 4 rasm
