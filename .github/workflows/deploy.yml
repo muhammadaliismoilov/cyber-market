@@ -26,7 +26,7 @@ jobs:
             rm -rf cyber-market
             git clone https://github.com/muhammadaliismoilov/cyber-market.git
             cd cyber-market
-            echo "PORT=4003" > .env
+            echo "PORT=${{secrets.PORT}}" > .env
             echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
             echo "EMAIL_USER=${{ secrets.EMAIL_USER }}" >> .env
