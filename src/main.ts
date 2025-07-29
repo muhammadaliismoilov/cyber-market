@@ -29,7 +29,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle("Cyber_Market API")
-    .setDescription("Cyber Market backend API hujjatlari")
+    .setDescription("Cyber Market backend API hujjatlari: bu erda foydalanuvchi register va login qiladi agar  foydalanuvhi superadmin yoki admin bolsa categoriya yaratib unga mahsulot qosha oladi, default user holda  mahsulotlar haqida ma`lumotlar ololadi , ularga comment yoza oladi, like bosa oladi, va sotib oladi ")
     .setVersion("1.0")
     .addBearerAuth(
       {

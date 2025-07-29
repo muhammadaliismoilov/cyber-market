@@ -7,7 +7,7 @@ import { RolesGuard } from 'src/guard/roles.guard';
 import { Roles } from 'src/guard/roles.decarator';
 
 // Foydalanuvchilar uchun controller: CRUD operatsiyalarini boshqaradi
-@ApiTags('users')
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
